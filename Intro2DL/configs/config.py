@@ -19,19 +19,25 @@ class ExptGroupConfigDefault(object):
     group_name = ['main']
     dataset = [{"name": "CIFAR10", "param": {}}]
     net = ['CNN']
-    optimizer = ['Adam']
-    scheduler = [{"name": "StepLR", "param": {"step_size": 1, "gamma": 0.5}}]
     lr = [1e-2]
-    min_lr = [1e-5]
+    optimizer = ['Adam']
+    scheduler = [{
+        "name": "StepLR",
+        "min_lr": 1e-4,
+        "param": {
+            "step_size": 1,
+            "gamma": 0.5
+        }
+    }]
     batchsize = [64]
-    iteration = [1000]
+    iteration = [10000]
     # ---------------------------------------------------- #
     configs_dict = get_configs_dict(locals())
 
 
 class ExptLab1N200(object):
     group_name = ['Lab1_N200']
-    dataset = [{"name": "CustomLab1", "param": {"N": 200}}]
+    dataset = [{"name": "Lab1", "param": {"N": 200}}]
     net = ['MLP']
     lr = [1e-2]
     optimizer = ['Adam']
@@ -46,7 +52,7 @@ class ExptLab1N200(object):
     batchsize = [16]
     iteration = [60000]
     # Lab1 specific settings
-    model = ['CustomModelLab1'],
+    model = ['Lab1'],
     hidden_sizes = [[64, 32, 16]]
     activation = ['ReLU']
     # ---------------------------------------------------- #
@@ -55,7 +61,7 @@ class ExptLab1N200(object):
 
 class ExptLab1N2000(object):
     group_name = ['Lab1_N2000']
-    dataset = [{"name": "CustomLab1", "param": {"N": 2000}}]
+    dataset = [{"name": "Lab1", "param": {"N": 2000}}]
     net = ['MLP']
     lr = [1e-2]
     optimizer = ['Adam']
@@ -70,7 +76,7 @@ class ExptLab1N2000(object):
     batchsize = [64]
     iteration = [60000]
     # Lab1 specific settings
-    model = ['CustomModelLab1'],
+    model = ['Lab1'],
     hidden_sizes = [[128, 64]]
     activation = ['ReLU']
     # ---------------------------------------------------- #
@@ -79,7 +85,7 @@ class ExptLab1N2000(object):
 
 class ExptLab1N10000(object):
     group_name = ['Lab1_N10000']
-    dataset = [{"name": "CustomLab1", "param": {"N": 10000}}]
+    dataset = [{"name": "Lab1", "param": {"N": 10000}}]
     net = ['MLP']
     lr = [1e-2]
     optimizer = ['Adam']
@@ -94,7 +100,7 @@ class ExptLab1N10000(object):
     batchsize = [512]
     iteration = [60000]
     # Lab1 specific settings
-    model = ['CustomModelLab1'],
+    model = ['Lab1'],
     hidden_sizes = [[256, 128]]
     activation = ['ReLU']
     # ---------------------------------------------------- #
