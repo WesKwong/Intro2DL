@@ -1,7 +1,7 @@
 def get_dataset(path, hp):
     name = hp['dataset']['name']
     param = hp['dataset']['param']
-    if name == 'lab1':
+    if name == 'Lab1':
         from .lab1 import Lab1
         dataset_obj = Lab1
     elif name == 'CIFAR10':
