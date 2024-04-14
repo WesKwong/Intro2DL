@@ -61,8 +61,13 @@ class BaseModel(object):
 
     def get_optim(self):
         # optimizer
-        optimizer = getattr(torch.optim, self.hp['optimizer'])
-        self.optimizer = optimizer(self.net.parameters(), lr=self.hp['lr'])
+        if 'name' in self.hp['optimizer']:
+            optimizer = getattr(torch.optim, self.hp['optimizer']['name'])
+            self.optimizer = optimizer(self.net.parameters(), lr=self.hp['lr'],
+                                       **self.hp['optimizer']['param'])
+        else:
+            optimizer = getattr(torch.optim, self.hp['optimizer'])
+            self.optimizer = optimizer(self.net.parameters(), lr=self.hp['lr'])
         # learning rate scheduler
         scheduler = getattr(torch.optim.lr_scheduler,
                             self.hp['scheduler']['name'])

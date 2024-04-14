@@ -77,10 +77,12 @@ def run_expt(expt):
         val_loss = f"{model.val_loss:.6f}"
         val_acc = f"{model.val_acc:.6f}"
         lr = f"{model.current_lr:.6f}"
+        epoch = f"{model.epoch}"
         loop.set_postfix(train_loss=train_loss,
                          val_loss=val_loss,
                          val_acc=val_acc,
-                         lr=lr)
+                         lr=lr,
+                         epoch=epoch)
     # save results
     logger.info(f"train_loss: {model.train_loss:.6f}, " + \
                 f"val_loss: {model.val_loss:.6f}, " + \
