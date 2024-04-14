@@ -17,7 +17,7 @@ def get_configs_dict(configs):
 
 class ExptGroupConfigDefault(object):
     group_name = ['main']
-    dataset = ['CIFAR10']
+    dataset = [{"name": "CIFAR10", "param": {}}]
     net = ['CNN']
     optimizer = ['Adam']
     scheduler = [{"name": "StepLR", "param": {"step_size": 1, "gamma": 0.5}}]
