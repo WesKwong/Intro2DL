@@ -31,6 +31,7 @@ class ExptGroupConfigDefault(object):
     }]
     batchsize = [64]
     iteration = [10000]
+    log_freq = [100]
     # ---------------------------------------------------- #
     configs_dict = get_configs_dict(locals())
 
@@ -51,6 +52,7 @@ class ExptLab1N200(object):
     }]
     batchsize = [16]
     iteration = [60000]
+    log_freq = [100]
     # Lab1 specific settings
     model = ['Lab1'],
     hidden_sizes = [[64, 32, 16]]
@@ -75,6 +77,7 @@ class ExptLab1N2000(object):
     }]
     batchsize = [64]
     iteration = [60000]
+    log_freq = [100]
     # Lab1 specific settings
     model = ['Lab1'],
     hidden_sizes = [[128, 64]]
@@ -99,6 +102,7 @@ class ExptLab1N10000(object):
     }]
     batchsize = [512]
     iteration = [60000]
+    log_freq = [100]
     # Lab1 specific settings
     model = ['Lab1'],
     hidden_sizes = [[256, 128]]
@@ -135,7 +139,6 @@ class GlobalConfig(object):
     mode = "train"
     log_level = "INFO"
     dataloader_workers = 4
-    prepare_new_dataset = True
 
 
 expt_group_config_manager = ExptGroupConfigManager()
