@@ -1,5 +1,5 @@
 def get_nn(hp):
-    name = hp['name']
+    name = hp['net']
     if name == "MLP":
         from .mlp import MLP
         return MLP()
