@@ -8,7 +8,7 @@ def get_nn(hp):
     param = {}
     if 'param' in hp['net']:
         param = hp['net']['param']
-    # get neural network object
+    # ------------- get neural network object ------------ #
     if name == 'MLP':
         from .mlp import MLP
         nn_obj = MLP

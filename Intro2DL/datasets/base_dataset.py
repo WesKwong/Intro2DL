@@ -1,6 +1,10 @@
 import os
 from abc import ABC, abstractmethod
+
 from torch.utils.data import DataLoader
+from configs import global_config as config
+
+num_workers = config.dataloader_workers
 
 
 class BaseDataset(ABC):
@@ -41,10 +45,19 @@ class BaseDataset(ABC):
         return self.test_set
 
     def get_train_loader(self, batchsize):
-        return DataLoader(self.train_set, batch_size=batchsize, shuffle=True)
+        return DataLoader(self.train_set,
+                          batch_size=batchsize,
+                          num_workers=num_workers,
+                          shuffle=True)
 
     def get_val_loader(self, batchsize):
-        return DataLoader(self.val_set, batch_size=batchsize, shuffle=False)
+        return DataLoader(self.val_set,
+                          batch_size=batchsize,
+                          num_workers=num_workers,
+                          shuffle=False)
 
     def get_test_loader(self, batchsize):
-        return DataLoader(self.test_set, batch_size=batchsize, shuffle=False)
+        return DataLoader(self.test_set,
+                          batch_size=batchsize,
+                          num_workers=num_workers,
+                          shuffle=False)

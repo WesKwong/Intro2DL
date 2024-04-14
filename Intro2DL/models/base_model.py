@@ -57,11 +57,11 @@ class BaseModel(object):
         return self.__str__()
 
     def get_nn(self):
-        self.net = get_nn(self.hp['net']).to(device)
+        self.net = get_nn(self.hp).to(device)
 
     def get_optim(self):
         # optimizer
-        optimizer = getattr(torch.optim, self.hp['optim'])
+        optimizer = getattr(torch.optim, self.hp['optimizer'])
         self.optimizer = optimizer(self.net.parameters(), lr=self.hp['lr'])
         # learning rate scheduler
         scheduler = getattr(torch.optim.lr_scheduler,
@@ -83,7 +83,6 @@ class BaseModel(object):
             if data is None:
                 self.epoch += 1
                 self.schedule_flag = True
-                self.validate()
                 self.iter_train_loader = iter(self.train_loader)
                 data, label = next(self.iter_train_loader)
 
@@ -114,6 +113,7 @@ class BaseModel(object):
                 self.schedule_flag = False
 
         self.train_loss = train_loss / iteration
+        return self.train_loss
 
     def validate(self):
         val_loss = 0.0
