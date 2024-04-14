@@ -54,7 +54,7 @@ class ExptLab1N200(object):
     iteration = [60000]
     log_freq = [100]
     # Lab1 specific settings
-    model = ['Lab1'],
+    model = ['Lab1']
     hidden_sizes = [[64, 32, 16]]
     activation = ['ReLU']
     # ---------------------------------------------------- #
@@ -79,7 +79,7 @@ class ExptLab1N2000(object):
     iteration = [60000]
     log_freq = [100]
     # Lab1 specific settings
-    model = ['Lab1'],
+    model = ['Lab1']
     hidden_sizes = [[128, 64]]
     activation = ['ReLU']
     # ---------------------------------------------------- #
@@ -104,7 +104,7 @@ class ExptLab1N10000(object):
     iteration = [60000]
     log_freq = [100]
     # Lab1 specific settings
-    model = ['Lab1'],
+    model = ['Lab1']
     hidden_sizes = [[256, 128]]
     activation = ['ReLU']
     # ---------------------------------------------------- #
@@ -138,7 +138,6 @@ class GlobalConfig(object):
     random_seed = 42
     mode = "train"
     log_level = "INFO"
-    dataloader_workers = 4
 
 
 expt_group_config_manager = ExptGroupConfigManager()

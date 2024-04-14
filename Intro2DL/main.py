@@ -44,14 +44,17 @@ def run_expt(expt):
     # ==================================================== #
     logger.info('Training')
     start_time = time.time()
+    current_epoch = 0
     loop = tqdm(range(1, 1 + hp['iteration']), desc='Training')
     for round in loop:
         train_loss = model.train(1)
-        # ---------------------- log --------------------- #
-        if expt.is_log_round(round):
+        if current_epoch != model.epoch:
             val_result = model.validate()
             val_loss = val_result['loss']
             val_acc = val_result['acc']
+            current_epoch = model.epoch
+        # ---------------------- log --------------------- #
+        if expt.is_log_round(round):
             expt.log(
                 {
                     'iteration': round,
@@ -63,14 +66,14 @@ def run_expt(expt):
                 {
                     'train_loss': model.train_loss,
                     'val_loss': model.val_loss,
-                    'val_acc': val_acc,
+                    'val_acc': model.val_acc,
                 },
                 printout=False)
             expt.log({
                 'time': time.time() - start_time,
             }, printout=False)
         # --------------------- tqdm --------------------- #
-        train_loss = f"{train_loss:.6f}"
+        train_loss = f"{model.train_loss:.6f}"
         val_loss = f"{model.val_loss:.6f}"
         val_acc = f"{model.val_acc:.6f}"
         lr = f"{model.current_lr:.6f}"
@@ -80,8 +83,8 @@ def run_expt(expt):
                          lr=lr)
     # save results
     logger.info(f"train_loss: {model.train_loss:.6f}, " + \
-                 "val_loss: {model.val_loss:.6f}, " + \
-                 "val_acc: {model.val_acc:.6f}")
+                f"val_loss: {model.val_loss:.6f}, " + \
+                f"val_acc: {model.val_acc:.6f}")
     expt.save_to_disc(results_path)
 
     # test model
