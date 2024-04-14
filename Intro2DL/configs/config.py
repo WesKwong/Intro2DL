@@ -17,16 +17,16 @@ def get_configs_dict(configs):
 
 class ExptGroupConfigDefault(object):
     group_name = ['main']
-    dataset = [{"name": "CIFAR10", "param": {}}]
+    dataset = [{'name': 'CIFAR10', 'param': {}}]
     net = ['CNN']
     lr = [1e-2]
     optimizer = ['Adam']
     scheduler = [{
-        "name": "StepLR",
-        "min_lr": 1e-4,
-        "param": {
-            "step_size": 1,
-            "gamma": 0.5
+        'name': 'StepLR',
+        'min_lr': 1e-4,
+        'param': {
+            'step_size': 1,
+            'gamma': 0.5
         }
     }]
     batchsize = [64]
@@ -37,16 +37,16 @@ class ExptGroupConfigDefault(object):
 
 class ExptLab1N200(object):
     group_name = ['Lab1_N200']
-    dataset = [{"name": "Lab1", "param": {"N": 200}}]
+    dataset = [{'name': 'Lab1', 'param': {'N': 200}}]
     net = ['MLP']
     lr = [1e-2]
     optimizer = ['Adam']
     scheduler = [{
-        "name": "StepLR",
-        "min_lr": 1e-4,
-        "param": {
-            "step_size": 50,
-            "gamma": 0.9
+        'name': 'StepLR',
+        'min_lr': 1e-4,
+        'param': {
+            'step_size': 50,
+            'gamma': 0.9
         }
     }]
     batchsize = [16]
@@ -61,16 +61,16 @@ class ExptLab1N200(object):
 
 class ExptLab1N2000(object):
     group_name = ['Lab1_N2000']
-    dataset = [{"name": "Lab1", "param": {"N": 2000}}]
+    dataset = [{'name': 'Lab1', 'param': {'N': 2000}}]
     net = ['MLP']
     lr = [1e-2]
     optimizer = ['Adam']
     scheduler = [{
-        "name": "StepLR",
-        "min_lr": 1e-4,
-        "param": {
-            "step_size": 50,
-            "gamma": 0.9
+        'name': 'StepLR',
+        'min_lr': 1e-4,
+        'param': {
+            'step_size': 50,
+            'gamma': 0.9
         }
     }]
     batchsize = [64]
@@ -85,16 +85,16 @@ class ExptLab1N2000(object):
 
 class ExptLab1N10000(object):
     group_name = ['Lab1_N10000']
-    dataset = [{"name": "Lab1", "param": {"N": 10000}}]
+    dataset = [{'name': 'Lab1', 'param': {'N': 10000}}]
     net = ['MLP']
     lr = [1e-2]
     optimizer = ['Adam']
     scheduler = [{
-        "name": "StepLR",
-        "min_lr": 1e-4,
-        "param": {
-            "step_size": 50,
-            "gamma": 0.9
+        'name': 'StepLR',
+        'min_lr': 1e-4,
+        'param': {
+            'step_size': 50,
+            'gamma': 0.9
         }
     }]
     batchsize = [512]
