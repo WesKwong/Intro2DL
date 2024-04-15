@@ -37,7 +37,7 @@ class BNormLeNet5(nn.Module):
     """
 
     def __init__(self, in_channels: int = 3, n_classes: int = 10) -> None:
-        super(LeNet5, self).__init__()
+        super(BNormLeNet5, self).__init__()
         self.conv1 = nn.Conv2d(in_channels, 6, 5)
         self.bn1 = nn.BatchNorm2d(6)
         self.conv2 = nn.Conv2d(6, 16, 5)
@@ -66,7 +66,7 @@ class LNormLeNet5(nn.Module):
     """
 
     def __init__(self, in_channels: int = 3, n_classes: int = 10) -> None:
-        super(LeNet5, self).__init__()
+        super(LNormLeNet5, self).__init__()
         self.conv1 = nn.Conv2d(in_channels, 6, 5)
         self.ln1 = nn.LayerNorm([6, 28, 28])
         self.conv2 = nn.Conv2d(6, 16, 5)
@@ -95,7 +95,7 @@ class INormLeNet5(nn.Module):
     """
 
     def __init__(self, in_channels: int = 3, n_classes: int = 10) -> None:
-        super(LeNet5, self).__init__()
+        super(INormLeNet5, self).__init__()
         self.conv1 = nn.Conv2d(in_channels, 6, 5)
         self.in1 = nn.InstanceNorm2d(6)
         self.conv2 = nn.Conv2d(6, 16, 5)
