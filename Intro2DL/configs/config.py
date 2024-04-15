@@ -17,20 +17,20 @@ def get_configs_dict(configs):
 
 class ExptGroupConfigDefault(object):
     group_name = ['main']
-    dataset = [{'name': 'CIFAR10', 'param': {}}]
-    net = ['CNN']
+    dataset = ['CIFAR10']
+    net = ['LeNet5']
     lr = [1e-2]
-    optimizer = ['Adam']
+    optimizer = ['SGD']
     scheduler = [{
         'name': 'StepLR',
-        'min_lr': 1e-4,
+        'min_lr': 1e-5,
         'param': {
             'step_size': 1,
-            'gamma': 0.5
+            'gamma': 1
         }
     }]
     batchsize = [64]
-    iteration = [10000]
+    iteration = [35000]
     log_freq = [100]
     # ---------------------------------------------------- #
     configs_dict = get_configs_dict(locals())
@@ -135,7 +135,7 @@ class GlobalConfig(object):
     expt_name = None
     data_path = "data/"
     results_path = "results/"
-    random_seed = 42
+    random_seed = 114514
     mode = "train"
     log_level = "INFO"
     prepare_new_dataset = True
