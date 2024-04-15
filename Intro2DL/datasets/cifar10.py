@@ -4,6 +4,7 @@ import torch
 import torchvision
 
 from .base_dataset import BaseDataset
+from configs import global_config as config
 
 
 class CIFAR10(BaseDataset):
@@ -13,15 +14,17 @@ class CIFAR10(BaseDataset):
         super().__init__(path)
 
     def gen_raw_data(self, raw_path):
-        if os.path.exists(os.path.join(raw_path, 'data.pt')):
+        if not config.prepare_new_dataset and os.path.exists(os.path.join(raw_path, 'data.pt')):
             return
         train_transform = torchvision.transforms.Compose([
             torchvision.transforms.ToTensor(),
-            torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            torchvision.transforms.Normalize(mean=[0.49139968, 0.48215827, 0.44653124],
+                                             std=[0.24703233, 0.24348505, 0.26158768])
         ])
         test_transform = torchvision.transforms.Compose([
             torchvision.transforms.ToTensor(),
-            torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            torchvision.transforms.Normalize(mean=[0.49139968, 0.48215827, 0.44653124],
+                                             std=[0.24703233, 0.24348505, 0.26158768])
         ])
         train_set = torchvision.datasets.CIFAR10(root=raw_path,
                                                  train=True,
@@ -37,7 +40,7 @@ class CIFAR10(BaseDataset):
         torch.save(data, os.path.join(raw_path, 'data.pt'))
 
     def split_train_data(self, raw_path, split_path):
-        if os.path.exists(os.path.join(split_path, 'data.pt')):
+        if not config.prepare_new_dataset and os.path.exists(os.path.join(split_path, 'data.pt')):
             return
         data = torch.load(os.path.join(raw_path, 'data.pt'))
         train_set = data['train']

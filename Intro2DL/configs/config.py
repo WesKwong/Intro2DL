@@ -138,6 +138,7 @@ class GlobalConfig(object):
     random_seed = 42
     mode = "train"
     log_level = "INFO"
+    prepare_new_dataset = True
 
 
 expt_group_config_manager = ExptGroupConfigManager()

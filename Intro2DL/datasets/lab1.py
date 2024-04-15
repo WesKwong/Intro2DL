@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import TensorDataset
 
 from .base_dataset import BaseDataset
+from configs import global_config as config
 
 
 class Lab1(BaseDataset):
@@ -17,7 +18,7 @@ class Lab1(BaseDataset):
         N = self.N
         data_path = os.path.join(raw_path, f'N{N}.pt')
         # judge if the dataset exists
-        if os.path.exists(data_path):
+        if not config.prepare_new_dataset and os.path.exists(data_path):
             return
 
         # --------------------- generate data -------------------- #
@@ -46,7 +47,7 @@ class Lab1(BaseDataset):
         data_path = os.path.join(raw_path, f'N{N}.pt')
         split_data_path = os.path.join(split_path, f'N{N}.pt')
         # judge if the dataset exists
-        if os.path.exists(split_data_path):
+        if not config.prepare_new_dataset and os.path.exists(split_data_path):
             return
 
         # ----------------- calculate split index ---------------- #
