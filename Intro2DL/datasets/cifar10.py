@@ -19,12 +19,14 @@ class CIFAR10(BaseDataset):
         train_transform = torchvision.transforms.Compose([
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(mean=[0.49139968, 0.48215827, 0.44653124],
-                                             std=[0.24703233, 0.24348505, 0.26158768])
+                                             std=[0.24703233, 0.24348505, 0.26158768],
+                                             inplace=True)
         ])
         test_transform = torchvision.transforms.Compose([
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(mean=[0.49139968, 0.48215827, 0.44653124],
-                                             std=[0.24703233, 0.24348505, 0.26158768])
+                                             std=[0.24703233, 0.24348505, 0.26158768],
+                                             inplace=True)
         ])
         train_set = torchvision.datasets.CIFAR10(root=raw_path,
                                                  train=True,
