@@ -72,6 +72,7 @@ def run_expt(expt):
             expt.log({
                 'time': time.time() - start_time,
             }, printout=False)
+            expt.save_to_disc(results_path, verbose=False)
         # --------------------- tqdm --------------------- #
         train_loss = f"{model.train_loss:.6f}"
         val_loss = f"{model.val_loss:.6f}"
