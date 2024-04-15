@@ -86,5 +86,5 @@ class Experiment():
                      **self.results}
         return expt_dict
 
-    def save_to_disc(self, path):
-        save_results(self.to_dict(), path, 'expt_'+str(self.hyperparameters['log_id']))
+    def save_to_disc(self, path, verbose=True):
+        save_results(self.to_dict(), path, 'expt_'+str(self.hyperparameters['log_id']), verbose=verbose)
