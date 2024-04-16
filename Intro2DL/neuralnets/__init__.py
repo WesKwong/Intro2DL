@@ -24,6 +24,12 @@ def get_nn(hp):
     elif name == 'INormLeNet5':
         from .cnn import INormLeNet5
         nn_obj = INormLeNet5
+    elif name == 'PadBNLeNet5':
+        from .cnn import PadBNLeNet5
+        nn_obj = PadBNLeNet5
+    elif name == 'PadBNKernel3LeNet5':
+        from .cnn import PadBNKernel3LeNet5
+        nn_obj = PadBNKernel3LeNet5
     # ---------------------------------------------------- #
     else:
         raise ValueError(f"Unknown neural network name: {name}")
