@@ -30,6 +30,9 @@ def get_nn(hp):
     elif name == 'PadBNKernel3LeNet5':
         from .cnn import PadBNKernel3LeNet5
         nn_obj = PadBNKernel3LeNet5
+    elif name == 'DropoutPadBNLeNet5':
+        from .cnn import DropoutPadBNLeNet5
+        nn_obj = DropoutPadBNLeNet5
     # ---------------------------------------------------- #
     else:
         raise ValueError(f"Unknown neural network name: {name}")

@@ -144,6 +144,7 @@ class PadBNLeNet5(nn.Module):
         x = self.fc3(x)
         return x
 
+
 class PadBNKernel3LeNet5(nn.Module):
     r"""Convolutional Neural Network: LeNet-5 with Padding and Batch Normalization and Kernel size 3.
     Args:
@@ -169,5 +170,37 @@ class PadBNKernel3LeNet5(nn.Module):
         x = self.flatten(x)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
+
+class DropoutPadBNLeNet5(nn.Module):
+    r"""Convolutional Neural Network: LeNet-5 with Dropout, Padding and Batch Normalization.
+    Args:
+        in_channels (int, optional): Number of channels in the input data. Defaults to 3.
+        n_classes (int, optional): Number of classes in the dataset. Defaults to 10.
+    """
+
+    def __init__(self, in_channels: int = 3, n_classes: int = 10) -> None:
+        super(DropoutPadBNLeNet5, self).__init__()
+        self.conv1 = nn.Conv2d(in_channels, 8, 5, padding=2)
+        self.bn1 = nn.BatchNorm2d(8)
+        self.conv2 = nn.Conv2d(8, 16, 5, padding=1)
+        self.bn2 = nn.BatchNorm2d(16)
+        self.pool = nn.MaxPool2d(2)
+        self.flatten = nn.Flatten()
+        self.fc1 = nn.Linear(16 * 7 * 7, 120)
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, n_classes)
+        self.dropout = nn.Dropout()
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.bn1(self.conv1(x))))
+        x = self.pool(F.relu(self.bn2(self.conv2(x))))
+        x = self.flatten(x)
+        x = F.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = F.relu(self.fc2(x))
+        x = self.dropout(x)
         x = self.fc3(x)
         return x
