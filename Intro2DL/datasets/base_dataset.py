@@ -32,6 +32,10 @@ class BaseDataset(ABC):
     def load_split_data(self, split_path):
         raise NotImplementedError
 
+    @abstractmethod
+    def get_transform(self):
+        raise NotImplementedError
+
     def get_train_set(self):
         return self.train_set
 

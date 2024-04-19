@@ -14,6 +14,9 @@ class Lab1(BaseDataset):
         self.N = N
         super().__init__(path)
 
+    def get_transform(self):
+        pass
+
     def gen_raw_data(self, raw_path):
         N = self.N
         data_path = os.path.join(raw_path, f'N{N}.pt')

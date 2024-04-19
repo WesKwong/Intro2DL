@@ -1,4 +1,5 @@
 import os
+from copy import copy
 
 import torch
 import torchvision.datasets as datasets
@@ -14,30 +15,30 @@ class CIFAR10(BaseDataset):
         self.name = 'CIFAR10'
         super().__init__(path)
 
+    def get_transform(self):
+        self.train_transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.49139968, 0.48215827, 0.44653124],
+                                 std=[0.24703233, 0.24348505, 0.26158768],
+                                 inplace=True)
+        ])
+        self.test_transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.49139968, 0.48215827, 0.44653124],
+                                 std=[0.24703233, 0.24348505, 0.26158768],
+                                 inplace=True)
+        ])
+
     def gen_raw_data(self, raw_path):
         if not config.prepare_new_dataset and os.path.exists(
                 os.path.join(raw_path, 'data.pt')):
             return
-        train_transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.49139968, 0.48215827, 0.44653124],
-                                 std=[0.24703233, 0.24348505, 0.26158768],
-                                 inplace=True)
-        ])
-        test_transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.49139968, 0.48215827, 0.44653124],
-                                 std=[0.24703233, 0.24348505, 0.26158768],
-                                 inplace=True)
-        ])
         train_set = datasets.CIFAR10(root=raw_path,
                                      train=True,
-                                     download=True,
-                                     transform=train_transform)
+                                     download=True)
         test_set = datasets.CIFAR10(root=raw_path,
                                     train=False,
-                                    download=True,
-                                    transform=test_transform)
+                                    download=True)
         if not os.path.exists(raw_path):
             os.makedirs(raw_path)
         data = {'train': train_set, 'test': test_set}
@@ -47,13 +48,23 @@ class CIFAR10(BaseDataset):
         if not config.prepare_new_dataset and os.path.exists(
                 os.path.join(split_path, 'data.pt')):
             return
+        # Load raw data
         data = torch.load(os.path.join(raw_path, 'data.pt'))
-        train_set = data['train']
+        data_set = data['train']
         test_set = data['test']
-        train_size = int(len(train_set) * 0.98)
-        val_size = len(train_set) - train_size
+        # Split train set into train and val set
+        train_size = int(len(data_set) * 0.98)
+        val_size = len(data_set) - train_size
         train_set, val_set = torch.utils.data.random_split(
-            train_set, [train_size, val_size])
+            data_set, [train_size, val_size])
+        # Set transform
+        self.get_transform()
+        train_set.dataset = copy(data_set)
+        train_set.dataset.transform = self.train_transform
+        val_set.dataset = copy(data_set)
+        val_set.dataset.transform = self.test_transform
+        test_set.transform = self.test_transform
+        # Save split data
         if not os.path.exists(split_path):
             os.makedirs(split_path)
         data = {'train': train_set, 'val': val_set, 'test': test_set}
