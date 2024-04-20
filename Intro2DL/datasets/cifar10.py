@@ -17,6 +17,10 @@ class CIFAR10(BaseDataset):
 
     def get_transform(self):
         self.train_transform = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1),
+            transforms.RandomRotation(15),
+            transforms.RandomResizedCrop(32, scale=(0.8, 1.0)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.49139968, 0.48215827, 0.44653124],
                                  std=[0.24703233, 0.24348505, 0.26158768],
