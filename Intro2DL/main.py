@@ -94,21 +94,26 @@ def run_expt(expt):
     if config.mode == 'test':
         logger.info('Testing')
         test_loader = dataset.get_test_loader(hp['batchsize'])
-        test_loss = model.test(test_loader)
+        test_result = model.test(test_loader)
+        test_loss = test_result['loss']
+        test_acc = test_result['acc']
         del test_loader
-        logger.info(f'test_loss: {test_loss:.6f}')
+        logger.info(f'test_loss: {test_loss:.6f}, test_acc: {test_acc:.6f}')
         expt.log({
             'test_loss': test_loss,
-        }, printout=False)
+            'test_acc': test_acc
+        },
+                 printout=False)
         expt.save_to_disc(results_path)
-        torch.save(model.net.state_dict(),
-                   os.path.join(results_path, f"model_{expt.log_id}.pth"))
+        torch.save(
+            model.net.state_dict(),
+            os.path.join(results_path,
+                         f"model_{expt.hyperparameters['log_id']}.pth"))
 
     # clear memory
     del model, dataset, train_loader, val_loader
     if device == torch.device("cuda"):
         torch.cuda.empty_cache()
-
 
 
 def main():
