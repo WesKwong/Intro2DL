@@ -33,6 +33,9 @@ def get_nn(hp):
     elif name == 'DropoutPadBNLeNet5':
         from .cnn import DropoutPadBNLeNet5
         nn_obj = DropoutPadBNLeNet5
+    elif name == 'MoreChannel':
+        from .cnn import MoreChannel
+        nn_obj = MoreChannel
     # ---------------------------------------------------- #
     else:
         raise ValueError(f"Unknown neural network name: {name}")
