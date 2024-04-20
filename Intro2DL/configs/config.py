@@ -18,20 +18,55 @@ def get_configs_dict(configs):
 class ExptGroupConfigDefault(object):
     group_name = ['main']
     dataset = ['CIFAR10']
-    net = ['LeNet5']
-    lr = [1e-2]
-    optimizer = ['SGD']
+    net = ['FinalCNN']
+    lr = [1e-1]
+    optimizer = [{
+        'name': 'SGD',
+        'param': {
+            'momentum': 0.9,
+            'weight_decay': 5e-4,
+            'nesterov': True
+        }
+    }]
     scheduler = [{
         'name': 'StepLR',
         'min_lr': 1e-5,
         'param': {
             'step_size': 1,
-            'gamma': 1
+            'gamma': 0.95
         }
     }]
-    batchsize = [64]
-    iteration = [35000]
-    log_freq = [100]
+    batchsize = [256]
+    iteration = [10000]
+    log_freq = [10]
+    # ---------------------------------------------------- #
+    configs_dict = get_configs_dict(locals())
+
+
+class ExptLab2(object):
+    group_name = ['main']
+    dataset = ['CIFAR10']
+    net = ['FinalCNN']
+    lr = [1e-1]
+    optimizer = [{
+        'name': 'SGD',
+        'param': {
+            'momentum': 0.9,
+            'weight_decay': 5e-4,
+            'nesterov': True
+        }
+    }]
+    scheduler = [{
+        'name': 'StepLR',
+        'min_lr': 1e-5,
+        'param': {
+            'step_size': 1,
+            'gamma': 0.95
+        }
+    }]
+    batchsize = [256]
+    iteration = [10000]
+    log_freq = [10]
     # ---------------------------------------------------- #
     configs_dict = get_configs_dict(locals())
 
