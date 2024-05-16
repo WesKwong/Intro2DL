@@ -8,5 +8,8 @@ def get_model_obj(hp):
     if name == 'Lab1':
         from .lab1 import Lab1Model
         return Lab1Model
+    elif name == 'GCNModel':
+        from .gcn import GCNModel
+        return GCNModel
     else:
         raise ValueError(f"Invalid model: {name}")
