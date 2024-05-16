@@ -39,6 +39,9 @@ def get_nn(hp):
     elif name == 'FinalCNN':
         from .cnn import FinalCNN
         nn_obj = FinalCNN
+    elif name == 'MyGCN':
+        from .gcn import MyGCN
+        nn_obj = MyGCN
     # ---------------------------------------------------- #
     else:
         raise ValueError(f"Unknown neural network name: {name}")
