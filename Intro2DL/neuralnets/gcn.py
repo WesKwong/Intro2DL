@@ -83,7 +83,7 @@ class DropEdge(nn.Module):
         return dropout_edge(adj, p=self.p, training=self.training)
 
 
-class MyGCN(nn.Module):
+class GCN(nn.Module):
 
     def __init__(self,
                  nfeat,
@@ -94,7 +94,7 @@ class MyGCN(nn.Module):
                  pairnorm=False,
                  activation='ReLU',
                  dropout=0.5):
-        super(MyGCN, self).__init__()
+        super(GCN, self).__init__()
         # dropedge
         self.use_dropedge = dropedge > 0.0
         self.dropedge = DropEdge(dropedge)
@@ -133,3 +133,11 @@ class MyGCN(nn.Module):
             x = self.dropout(x)
         x = self.layers[-1](x, adj)
         return x
+
+
+class LinkGCN(GCN):
+
+    @staticmethod
+    def decode(z, pos_edge_index, neg_edge_index):
+        edge_index = torch.cat([pos_edge_index, neg_edge_index], dim=-1)
+        return (z[edge_index[0]] * z[edge_index[1]]).sum(dim=-1)

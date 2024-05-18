@@ -11,5 +11,8 @@ def get_model_obj(hp):
     elif name == 'GCNModel':
         from .gcn_model import GCNModel
         return GCNModel
+    elif name == 'LinkGCNModel':
+        from .gcn_model import LinkGCNModel
+        return LinkGCNModel
     else:
         raise ValueError(f"Invalid model: {name}")
