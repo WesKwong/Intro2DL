@@ -1,10 +1,7 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-
-from tools.cuda_utils import get_device
-
-device = get_device()
+from torch_geometric.utils.dropout import dropout_edge
+from torch_geometric.nn.norm import PairNorm
 
 
 class MyGraphConv(nn.Module):
@@ -13,11 +10,13 @@ class MyGraphConv(nn.Module):
                  in_features,
                  out_features,
                  add_self_loops=True,
+                 use_cached_adj=True,
                  laplace_normalize=True,
                  bias=True):
         super(MyGraphConv, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
+        self.use_cached_adj = use_cached_adj
         self.add_self_loops = add_self_loops
         self.laplace_normalize = laplace_normalize
 
@@ -36,12 +35,12 @@ class MyGraphConv(nn.Module):
             nn.init.zeros_(self.bias)
 
     def forward(self, input, adj):
-        if self.cached_adj is None:
+        if not self.use_cached_adj or self.cached_adj is None:
             # transform adj to sparse tensor
             num_nodes = input.size(0)
             self.cached_adj = torch.sparse_coo_tensor(
                 indices=adj,
-                values=torch.ones(adj.size(1)).to(device),
+                values=torch.ones(adj.size(1), device=adj.device),
                 size=(num_nodes, num_nodes))
             self.cached_adj = self.cached_adj.to_dense()
             # add self loops
@@ -59,6 +58,7 @@ class MyGraphConv(nn.Module):
                 self.cached_adj = torch.mm(deg_inv_sqrt, self.cached_adj)
                 self.cached_adj = torch.mm(self.cached_adj, deg_inv_sqrt)
             self.cached_adj = self.cached_adj.to_sparse()
+
         adj = self.cached_adj
 
         support = torch.mm(input, self.weight)
@@ -73,80 +73,63 @@ class MyGraphConv(nn.Module):
                + str(self.in_features) + ', ' \
                + str(self.out_features) + ')'
 
-class MyPairNorm(nn.Module):
+class DropEdge(nn.Module):
 
-        def __init__(self, mode='PN', scale=1):
-            super(MyPairNorm, self).__init__()
-            self.mode = mode
-            self.scale = scale
+    def __init__(self, p):
+        super(DropEdge, self).__init__()
+        self.p = p
 
-        def forward(self, x):
-            if self.mode == 'PN':
-                x = x / x.norm(dim=1)[:, None]
-            elif self.mode == 'PN-SI':
-                x = x / x.norm(dim=1)[:, None]
-                x = self.scale * x
-            elif self.mode == 'PN-TI':
-                x = x / x.norm(dim=1)[:, None]
-                x = x / x.norm(dim=1)[:, None]
-            elif self.mode == 'None':
-                pass
-            else:
-                raise ValueError('PairNorm mode must be PN, PN-SI, PN-TI, or None')
-            return x
+    def forward(self, adj):
+        return dropout_edge(adj, p=self.p, training=self.training)
+
 
 class MyGCN(nn.Module):
 
-    def __init__(self, nfeat, nclass, nhid=[16], activation='ReLU', pairnorm=False, dropout=0.5):
+    def __init__(self,
+                 nfeat,
+                 nclass,
+                 nhid=[16],
+                 add_self_loops=False,
+                 dropedge=0.0,
+                 pairnorm=False,
+                 activation='ReLU',
+                 dropout=0.5):
         super(MyGCN, self).__init__()
+        # dropedge
+        self.use_dropedge = dropedge > 0.0
+        self.dropedge = DropEdge(dropedge)
+        # pairnorm
+        self.use_pairnorm = pairnorm
+        self.pairnorm = PairNorm()
+        # activation function
         self.activation = getattr(nn, activation)()
+        # dropout
         self.dropout = nn.Dropout(dropout)
-        self.pairnorm = pairnorm
+        # GraphConv layers
+        kwargs = dict(use_cached_adj=False if dropedge > 0.0 else True,
+                      add_self_loops=add_self_loops)
 
         # construct input layer
-        self.layers = nn.ModuleList([MyGraphConv(nfeat, nhid[0])])
+        self.layers = nn.ModuleList([MyGraphConv(nfeat, nhid[0], **kwargs)])
 
         # construct hidden layers
         layer_sizes = zip(nhid[:-1], nhid[1:])
-        self.layers.extend([MyGraphConv(h1, h2) for h1, h2 in layer_sizes])
+        self.layers.extend(
+            [MyGraphConv(h1, h2, **kwargs) for h1, h2 in layer_sizes])
 
         # construct output layer
-        self.layers.append(MyGraphConv(nhid[-1], nclass))
-
-    # @staticmethod
-    # def PairNorm(x_feature):
-    #     mode = 'PN'
-    #     scale = 5
-    #     col_mean = x_feature.mean(dim=0)
-    #     if mode == 'PN':
-    #         x_feature = x_feature - col_mean
-    #         row_norm_mean = (1e-6 + x_feature.pow(2).sum(dim=1).mean()).sqrt()
-    #         x_feature = scale * x_feature / row_norm_mean
-
-    #     if mode == 'PN-SI':
-    #         x_feature = x_feature - col_mean
-    #         row_norm_individual = (1e-6 + x_feature.pow(2).sum(dim=1, keepdim=True)).sqrt()
-    #         x_feature = scale * x_feature / row_norm_individual
-
-    #     if mode == 'PN-SCS':
-    #         row_norm_individual = (1e-6 + x_feature.pow(2).sum(dim=1, keepdim=True)).sqrt()
-    #         x_feature = scale * x_feature / row_norm_individual - col_mean
-
-    #     return x_feature
-
-    @staticmethod
-    def PairNorm(x):
-        row_norms = x.norm(dim=-1, keepdim=True)
-        col_mean = row_norms.mean(dim=-2, keepdim=True)
-        x = x / (row_norms * col_mean).clamp(min=1e-6)
-        return x
-
+        self.layers.append(MyGraphConv(nhid[-1], nclass, **kwargs))
 
     def forward(self, x, adj):
+        if self.use_dropedge:
+            adj_mask = adj[0] < adj[1]
+            adj = adj[:, adj_mask]
+            adj, _ = self.dropedge(adj)
+            adj = torch.cat([adj, adj.flip(0)], dim=1)
         for i, layer in enumerate(self.layers[:-1]):
             x = self.activation(layer(x, adj))
-            if self.pairnorm:
-                x = self.PairNorm(x)
+            if self.use_pairnorm:
+                x = self.pairnorm(x)
             x = self.dropout(x)
         x = self.layers[-1](x, adj)
         return x

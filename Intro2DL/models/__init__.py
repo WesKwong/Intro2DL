@@ -6,10 +6,10 @@ def get_model_obj(hp):
     # model specified
     name = hp['model']
     if name == 'Lab1':
-        from .lab1 import Lab1Model
+        from .lab1_model import Lab1Model
         return Lab1Model
     elif name == 'GCNModel':
-        from .gcn import GCNModel
+        from .gcn_model import GCNModel
         return GCNModel
     else:
         raise ValueError(f"Invalid model: {name}")

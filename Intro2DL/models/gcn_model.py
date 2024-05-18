@@ -15,20 +15,27 @@ class GCNModel(BaseModel):
         super().__init__(None, None, hyperparameters, experiment)
 
     def get_nn(self):
+        # features & class
         nfeat = self.dataset.num_node_features
         nclass = self.dataset.num_classes
+        # hyperparameters
+        add_self_loops = self.hp['add_self_loops']
         nhid = self.hp['nhid']
-        activation = self.hp['activation']
+        dropedge = self.hp['dropedge']
         pairnorm = self.hp['pairnorm']
-        dropout = self.hp['dropout']
+        activation = self.hp['activation']
+        # get net hp
         param = dict(nfeat=nfeat,
-                      nclass=nclass,
-                      nhid=nhid,
-                      activation=activation,
-                      pairnorm=pairnorm,
-                      dropout=dropout)
+                     nclass=nclass,
+                     add_self_loops=add_self_loops,
+                     nhid=nhid,
+                     activation=activation,
+                     dropedge=dropedge,
+                     pairnorm=pairnorm)
         net_hp = dict(name=self.hp['net'], param=param)
+        # get hp
         hp = dict(net=net_hp)
+        # get net
         self.net = get_nn(hp).to(device)
 
     def train(self, iteration):
