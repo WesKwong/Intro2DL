@@ -93,7 +93,7 @@ class GCN(nn.Module):
                  dropedge=0.0,
                  pairnorm=False,
                  activation='ReLU',
-                 dropout=0.5):
+                 dropout=0.2):
         super(GCN, self).__init__()
         # dropedge
         self.use_dropedge = dropedge > 0.0

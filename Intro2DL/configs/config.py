@@ -14,34 +14,133 @@ def get_configs_dict(configs):
 #                 Experiment Group Configs                 #
 # ======================================================== #
 
-
-class ExptGroupConfigDefault(object):
-    group_name = ['main']
-    dataset = ['CIFAR10']
-    net = ['FinalCNN']
-    lr = [1e-1]
+class ExptGroupConfigLab3ClassCora(object):
+    group_name = ['Lab3ClassCora']
+    dataset = ['Cora']
+    net = ['GCN']
+    lr = [1e-2]
     optimizer = [{
-        'name': 'SGD',
+        'name': 'Adam',
         'param': {
-            'momentum': 0.9,
             'weight_decay': 5e-4,
-            'nesterov': True
         }
     }]
     scheduler = [{
         'name': 'StepLR',
-        'min_lr': 1e-5,
+        'min_lr': 1e-4,
         'param': {
             'step_size': 1,
-            'gamma': 0.95
+            'gamma': 0.999
         }
     }]
     batchsize = [256]
-    iteration = [10000]
-    log_freq = [10]
+    iteration = [400]
+    log_freq = [1]
+    # Lab1 specific settings
+    model = ['GCNModel']
+    add_self_loops = [True]
+    nhid = [[16]]
+    dropedge = [0.0]
+    pairnorm = [False]
+    activation = ['LeakyReLU']
     # ---------------------------------------------------- #
     configs_dict = get_configs_dict(locals())
 
+class ExptGroupConfigLab3ClassCiteseer(object):
+    group_name = ['Lab3ClassCiteseer']
+    dataset = ['Citeseer']
+    net = ['GCN']
+    lr = [1e-2]
+    optimizer = [{
+        'name': 'Adam',
+        'param': {
+            'weight_decay': 5e-4,
+        }
+    }]
+    scheduler = [{
+        'name': 'StepLR',
+        'min_lr': 1e-4,
+        'param': {
+            'step_size': 1,
+            'gamma': 0.99
+        }
+    }]
+    batchsize = [256]
+    iteration = [400]
+    log_freq = [1]
+    # Lab1 specific settings
+    model = ['GCNModel']
+    add_self_loops = [True]
+    nhid = [[16]]
+    dropedge = [0.0]
+    pairnorm = [False]
+    activation = ['LeakyReLU']
+    # ---------------------------------------------------- #
+    configs_dict = get_configs_dict(locals())
+
+class ExptGroupConfigLab3LinkCora(object):
+    group_name = ['Lab3LinkCora']
+    dataset = ['Cora']
+    net = ['LinkGCN']
+    lr = [1e-2]
+    optimizer = [{
+        'name': 'Adam',
+        'param': {
+            'weight_decay': 5e-4,
+        }
+    }]
+    scheduler = [{
+        'name': 'StepLR',
+        'min_lr': 1e-4,
+        'param': {
+            'step_size': 1,
+            'gamma': 0.99
+        }
+    }]
+    batchsize = [256]
+    iteration = [20]
+    log_freq = [1]
+    # Lab1 specific settings
+    model = ['LinkGCNModel']
+    add_self_loops = [True]
+    nhid = [[128, 64]]
+    dropedge = [0.4]
+    pairnorm = [True]
+    activation = ['LeakyReLU']
+    # ---------------------------------------------------- #
+    configs_dict = get_configs_dict(locals())
+
+class ExptGroupConfigLab3LinkCiteseer(object):
+    group_name = ['Lab3LinkCiteseer']
+    dataset = ['Citeseer']
+    net = ['LinkGCN']
+    lr = [1e-2]
+    optimizer = [{
+        'name': 'Adam',
+        'param': {
+            'weight_decay': 5e-4,
+        }
+    }]
+    scheduler = [{
+        'name': 'StepLR',
+        'min_lr': 1e-4,
+        'param': {
+            'step_size': 1,
+            'gamma': 0.99
+        }
+    }]
+    batchsize = [256]
+    iteration = [20]
+    log_freq = [1]
+    # Lab1 specific settings
+    model = ['LinkGCNModel']
+    add_self_loops = [True]
+    nhid = [[128, 64]]
+    dropedge = [0.2]
+    pairnorm = [True]
+    activation = ['Sigmoid']
+    # ---------------------------------------------------- #
+    configs_dict = get_configs_dict(locals())
 
 class ExptLab2(object):
     group_name = ['main']
@@ -147,7 +246,12 @@ class ExptLab1N10000(object):
 
 
 class ExptGroupConfigManager(object):
-    expt_groups = [ExptGroupConfigDefault.configs_dict]
+    expt_groups = [
+        # ExptGroupConfigLab3ClassCora.configs_dict,
+        # ExptGroupConfigLab3ClassCiteseer.configs_dict
+        ExptGroupConfigLab3LinkCora.configs_dict,
+        ExptGroupConfigLab3LinkCiteseer.configs_dict
+    ]
 
     def get_expt_groups_configs(self):
         expt_groups_configs = {}
