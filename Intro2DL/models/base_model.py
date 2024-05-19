@@ -15,7 +15,7 @@ def get_loss_fn(hp):
     # get loss function
     if name == 'Lab1':
         return torch.nn.MSELoss()
-    elif name == 'CIFAR10':
+    elif name in ['CIFAR10', 'Cora', 'Citeseer']:
         return torch.nn.CrossEntropyLoss()
     else:
         raise ValueError(f"Invalid dataset: {name}")
@@ -24,7 +24,8 @@ class BaseModel(object):
 
     def __init__(self, train_loader, val_loader, hyperparameters, experiment):
         self.train_loader = train_loader
-        self.iter_train_loader = iter(train_loader)
+        if train_loader is not None:
+            self.iter_train_loader = iter(train_loader)
         self.val_loader = val_loader
         self.hp = hyperparameters
         self.expt = experiment
@@ -137,7 +138,7 @@ class BaseModel(object):
                 # loss
                 val_loss += self.loss_fn(pred, label).item()
                 val_steps += 1
-        self.val_loss = val_loss / len(self.val_loader)
+        self.val_loss = val_loss / val_steps
         self.val_acc = n_correct / n_total
         result = {
             "loss": self.val_loss,
@@ -162,7 +163,7 @@ class BaseModel(object):
                 # loss
                 test_loss += self.loss_fn(pred, label).item()
                 test_steps += 1
-        self.test_loss = test_loss / len(test_loader)
+        self.test_loss = test_loss / test_steps
         self.test_acc = n_correct / n_total
         result = {
             'loss': self.test_loss,
